@@ -111,6 +111,12 @@ void opcontrol() {
 	pros::screen_touch_status_s_t status;
 	
 	while (true) {
+		if (colour_map.find(key) != colour_map.end()) {
+			pros::Color colour = colour_map[key];
+			pros::screen::set_eraser(colour);
+		} else {
+			master.print(0, 0, "Invalid key: %d", key);
+		}
 
 		status = pros::screen::touch_status();
 
@@ -152,15 +158,11 @@ void opcontrol() {
 		}
 		else if (master.get_digital_new_press(DIGITAL_R1))	
 		{
-			key++;
-			master.clear_line(0);
-			master.print(0, 0, "%d - %s", key, colour_name_map[key].c_str());
+			colour++;
 		}
 		else if (master.get_digital_new_press(DIGITAL_L1))
 		{
-			key--;
-			master.clear_line(0);
-			master.print(0, 0, "%d - %s", key, colour_name_map[key].c_str());
+			colour--;
 		}
 		else if (status.touch_status == TOUCH_HELD)
 		{
@@ -170,10 +172,7 @@ void opcontrol() {
 			pros::screen::draw_pixel(x,y);
 		}
 		
-
-		
-		
-		
+		pros::screen::set_eraser(colour_map[colour]);
 		
 	}
 }
