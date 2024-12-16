@@ -93,6 +93,7 @@ void competition_initialize() {}
  */
 void autonomous() {}
 
+
 /**
  * Runs the operator control code. This function will be started in its own task
  * with the default priority and stack size whenever the robot is enabled via
@@ -107,8 +108,12 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	pros::screen_touch_status_s_t status;
 	
 	while (true) {
+
+		status = pros::screen::touch_status();
+
 		if (colour_map.find(key) != colour_map.end()) {
 			pros::Color colour = colour_map[key];
 			pros::screen::set_eraser(colour);
@@ -157,6 +162,16 @@ void opcontrol() {
 			master.clear_line(0);
 			master.print(0, 0, "%d - %s", key, colour_name_map[key].c_str());
 		}
+		else if (status.touch_status == TOUCH_HELD)
+		{
+			pros::screen::erase_pixel(x,y);
+			x = status.x;
+			y = status.y;
+			pros::screen::draw_pixel(x,y);
+		}
+		
+
+		
 		
 		
 		
