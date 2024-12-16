@@ -1,17 +1,43 @@
 #include "main.h"
 #include <map>
+#include "pros/colors.hpp"
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 int x = 1;
 int y = 1;
-int colour = 1;
+int key = 1;
 
 std::map<int, pros::Color> colour_map = {
-    {1, pros::Color::alice_blue},
-    {2, pros::Color::coral},
-    {3, pros::Color::dark_violet},
-    // Add more colors as needed
+	{1, pros::Color::white},
+	{2, pros::Color::red},
+	{3, pros::Color::green},
+	{4, pros::Color::blue},
+	{5, pros::Color::yellow},
+	{6, pros::Color::purple},
+	{7, pros::Color::orange},
+	{8, pros::Color::dark_sea_green},
+	{9, pros::Color::light_goldenrod_yellow},
+	{10, pros::Color::fire_brick},
+	{11, pros::Color::coral},
+	{12, pros::Color::thistle},
+	// Add more colors as needed
+};
+
+std::map<int, std::string> colour_name_map = {
+	{1, "white"},
+	{2, "red"},
+	{3, "green"},
+	{4, "blue"},
+	{5, "yellow"},
+	{6, "purple"},
+	{7, "orange"},
+	{8, "dark sea green"},
+	{9, "light goldenrod yellow"},
+	{10, "fire brick"},
+	{11, "coral"},
+	{12, "thistle"},
+	// Add more color names as needed
 };
 
 /**
@@ -83,6 +109,12 @@ void autonomous() {}
 void opcontrol() {
 	
 	while (true) {
+		if (colour_map.find(key) != colour_map.end()) {
+			pros::Color colour = colour_map[key];
+			pros::screen::set_eraser(colour);
+		} else {
+			master.print(0, 0, "Invalid key: %d", key);
+		}
 
 		pros::delay(20);                               // Run for 20 ms then update
 		if (master.get_digital(DIGITAL_UP))
@@ -113,16 +145,20 @@ void opcontrol() {
 		{
 			pros::screen::erase();
 		}
-		else if (master.get_digital(DIGITAL_R1))	
+		else if (master.get_digital_new_press(DIGITAL_R1))	
 		{
-			colour++;
+			key++;
+			master.clear_line(0);
+			master.print(0, 0, "%d - %s", key, colour_name_map[key].c_str());
 		}
-		else if (master.get_digital(DIGITAL_L1))
+		else if (master.get_digital_new_press(DIGITAL_L1))
 		{
-			colour--;
+			key--;
+			master.clear_line(0);
+			master.print(0, 0, "%d - %s", key, colour_name_map[key].c_str());
 		}
 		
-		pros::screen::set_eraser(colour_map[colour]);
+		
 		
 	}
 }
