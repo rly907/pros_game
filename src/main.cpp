@@ -1,8 +1,18 @@
 #include "main.h"
+#include <map>
+
+pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 int x = 1;
 int y = 1;
 int colour = 1;
+
+std::map<int, pros::Color> colour_map = {
+    {1, pros::Color::alice_blue},
+    {2, pros::Color::coral},
+    {3, pros::Color::dark_violet},
+    // Add more colors as needed
+};
 
 /**
  * A callback function for LLEMU's center button.
@@ -71,12 +81,9 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	
-
-
 	while (true) {
-		
+
 		pros::delay(20);                               // Run for 20 ms then update
 		if (master.get_digital(DIGITAL_UP))
 		{
@@ -112,13 +119,10 @@ void opcontrol() {
 		}
 		else if (master.get_digital(DIGITAL_L1))
 		{
-			/* code */
+			colour--;
 		}
 		
-		
-		
-		
-		
+		pros::screen::set_eraser(colour_map[colour]);
 		
 	}
 }
