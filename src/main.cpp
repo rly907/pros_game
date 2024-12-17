@@ -2,6 +2,7 @@
 #include <map>
 #include "pros/colors.hpp"
 
+
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 int x = 1;
@@ -107,8 +108,13 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
+
+
 void opcontrol() {
-	pros::screen_touch_status_s_t status;
+	
+
+	
 	
 	while (true) {
 		if (colour_map.find(key) != colour_map.end()) {
@@ -118,7 +124,7 @@ void opcontrol() {
 			master.print(0, 0, "Invalid key: %d", key);
 		}
 
-		status = pros::screen::touch_status();
+		// status = pros::screen::touch_status();
 
 		if (colour_map.find(key) != colour_map.end()) {
 			pros::Color colour = colour_map[key];
@@ -158,21 +164,39 @@ void opcontrol() {
 		}
 		else if (master.get_digital_new_press(DIGITAL_R1))	
 		{
-			colour++;
+			key++;
 		}
 		else if (master.get_digital_new_press(DIGITAL_L1))
 		{
-			colour--;
+			key--;
 		}
-		else if (status.touch_status == TOUCH_HELD)
+		if (master.get_analog(ANALOG_LEFT_X) > 25)
 		{
 			pros::screen::erase_pixel(x,y);
-			x = status.x;
-			y = status.y;
+			x++;
+			pros::screen::draw_pixel(x,y);
+		}
+		if (master.get_analog(ANALOG_LEFT_X) < -25)
+		{
+			pros::screen::erase_pixel(x,y);
+			x--;
+			pros::screen::draw_pixel(x,y);
+		}
+		if (master.get_analog(ANALOG_LEFT_Y) > 25)
+		{
+			pros::screen::erase_pixel(x,y);
+			y--;
+			pros::screen::draw_pixel(x,y);
+		}
+		if (master.get_analog(ANALOG_LEFT_Y) < -25)
+		{
+			pros::screen::erase_pixel(x,y);
+			y++;
 			pros::screen::draw_pixel(x,y);
 		}
 		
-		pros::screen::set_eraser(colour_map[colour]);
+		
+		// pros::screen::set_eraser(colour_map[colour]);
 		
 	}
 }
